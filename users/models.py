@@ -13,7 +13,7 @@ class Relationship(models.Model):
     from_user = models.ForeignKey(User,  models.CASCADE, verbose_name='從', related_name='following')
     to_user = models.ForeignKey(User, models.CASCADE, verbose_name='到', related_name='follower')
     is_agree = models.BooleanField('同意', default=False)
-    is_delete = models.BooleanField('顯示', default=True)
+    is_delete = models.BooleanField('刪除', default=False)
     start_at = models.DateField('開始時間', auto_now=True)
 
     class Meta:

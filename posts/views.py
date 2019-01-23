@@ -30,6 +30,11 @@ class PostViewSet(CanLikeMixin, viewsets.ModelViewSet):
 
         return serializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.action == 'list':
+            queryset =queryset.filter()
 
 
     @action(['POST'], True, permission_classes=[IsAuthenticated])
