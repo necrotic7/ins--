@@ -7,7 +7,7 @@ from rest_framework import mixins
 from rest_framework.serializers import Serializer
 
 from .models import Post, Commit
-from .permissions import IsCreatorOrReadOnly
+from .permissions import IsCreatorOrReadOnly, CanSeePost
 from .serializers import PostSerializer, CommitSerializer
 from .mixin import CanLikeMixin
 
@@ -19,6 +19,12 @@ class PostViewSet(CanLikeMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.action == 'retrieve':
+                permissions.append(CanSeePost())
+        return permissions
 
     def get_serializer_class(self):
         serializer = super().get_serializer_class()
@@ -34,8 +40,12 @@ class PostViewSet(CanLikeMixin, viewsets.ModelViewSet):
         queryset = super().get_queryset()
 
         if self.action == 'list':
-            queryset =queryset.filter()
+            following_user_list = \
+                self.request.user.following.filter(is_agree=True)\
+                    .values_list('to_user', flat=True)
+            queryset =queryset.filter(creator__in=following_user_list,)
 
+        return queryset
 
     @action(['POST'], True, permission_classes=[IsAuthenticated])
     def commit(self, request, pk):

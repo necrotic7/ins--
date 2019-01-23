@@ -7,5 +7,4 @@ class IsSelf(BasePermission):
         return obj == request.user
 
 
-# class CanSeePost(permissions):
-#     pass
+
