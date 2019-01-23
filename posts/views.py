@@ -60,14 +60,4 @@ class CommitViewSet(CanLikeMixin, mixins.UpdateModelMixin,
 
         return serializer
 
-    @action(['PATCH'], True, permission_classes=[IsAuthenticated])
-    def like(self, request, pk):
-        commit = self.get_object()
 
-        if request.user in commit.likes.all():
-            commit.likes.remove(request.user)
-        else:
-            commit.likes.add(request.user)
-
-        serializer = self.get_serializer(commit)
-        return Response(serializer.data)

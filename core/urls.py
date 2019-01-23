@@ -18,7 +18,15 @@ from django.urls import path, include
 
 from rest_framework import routers
 
+from posts.views import PostViewSet, CommitViewSet
+
+
+router = routers.DefaultRouter()
+router.trailing_slash = ''
+router.register('posts', PostViewSet)
+router.register('commits', CommitViewSet)
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
 ]
